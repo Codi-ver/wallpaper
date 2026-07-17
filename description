@@ -1,0 +1,20 @@
+1. division vscode (done)                                
+
+2. connect to database  (done)
+
+3. segmentation for subject
+
+4. isAdmin for uploading wallpapers 
+
+5. adding wallpapers ( admin )
+
+6. key for download
+
+7. use of artificial inteligent ( the last stage ) 
+
+
+
+200 -> موفقیت
+201 -> ایجاد
+400 -> خطای کاربر
+404 -> پیدا نشدن
