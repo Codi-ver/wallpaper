@@ -1,0 +1,41 @@
+<%- include("partials/head") %>
+<%- include("partials/navbar") %>
+
+<section class="about container">
+  <span class="hero__badge">✦ About Lumora</span>
+  <h1>A tiny wallpaper gallery,<br /><span>built to look good and load fast.</span></h1>
+  <p class="about__lead">
+    Lumora is a demo wallpaper download site. It renders on the server with EJS,
+    stores its data in MongoDB, and ships with a small admin panel so you can
+    upload, organise and delete wallpapers yourself.
+  </p>
+
+  <div class="about__grid">
+    <div class="about__card">
+      <span class="about__ico">🗂️</span>
+      <h3>Ten categories</h3>
+      <p>From nature and space to anime and cars — every wallpaper belongs to a curated category.</p>
+    </div>
+    <div class="about__card">
+      <span class="about__ico">⚡</span>
+      <h3>One-click download</h3>
+      <p>Every detail page hands you the full-resolution file instantly, no sign-up required.</p>
+    </div>
+    <div class="about__card">
+      <span class="about__ico">🛠️</span>
+      <h3>Admin panel</h3>
+      <p>Authenticated admins can upload new wallpapers and remove old ones from a clean dashboard.</p>
+    </div>
+    <div class="about__card">
+      <span class="about__ico">📱</span>
+      <h3>Responsive</h3>
+      <p>A masonry layout that adapts from a single column on phones to four on wide screens.</p>
+    </div>
+  </div>
+
+  <div class="about__cta">
+    <a class="btn btn--primary btn--lg" href="/explore">Start exploring →</a>
+  </div>
+</section>
+
+<%- include("partials/footer") %>

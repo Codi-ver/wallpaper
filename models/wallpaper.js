@@ -9,12 +9,24 @@ const schema = new mongoose.Schema(
     },
     description: {
       type: String,
-      require: true,
+      default: "",
+    },
+    image: {
+      // filename stored under /uploads
+      type: String,
+      required: true,
+    },
+    fileSize: {
+      type: Number,
+      default: 0,
+    },
+    downloads: {
+      type: Number,
+      default: 0,
     },
     uploadedBy: {
       type: mongoose.Types.ObjectId,
-      ref: "Admins",
-      require: true,
+      ref: "Admin",
     },
     category: {
       type: String,
@@ -30,7 +42,7 @@ const schema = new mongoose.Schema(
         "city",
         "sports",
         "technology",
-        "cute"
+        "cute",
       ],
     },
   },

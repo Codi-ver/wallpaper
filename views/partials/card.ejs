@@ -1,0 +1,14 @@
+<%/* Reusable wallpaper card. Expects local `w`. */ %>
+<% var _c = catOf(w.category); %>
+<article class="card reveal">
+  <a href="/wallpaper/<%= w._id %>" class="card__media">
+    <img src="/uploads/<%= encodeURIComponent(w.image) %>" alt="<%= w.title %>" loading="lazy" />
+    <span class="card__chip" style="background: <%= _c.gradient %>">
+      <%= _c.emoji %> <%= _c.label %>
+    </span>
+    <div class="card__overlay">
+      <h3><%= w.title %></h3>
+      <span class="card__dl">⬇ <%= w.downloads || 0 %> downloads</span>
+    </div>
+  </a>
+</article>

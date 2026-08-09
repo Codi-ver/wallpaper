@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · Lumora Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="dash-body">
+  <header class="dash__top">
+    <div class="container dash__top-inner">
+      <a href="/" class="brand">✦ Lumora <span class="dash__tag">Admin</span></a>
+      <nav class="dash__top-nav">
+        <a href="/">View site →</a>
+        <span class="dash__user">👤 <%= admin.username %></span>
+        <a class="btn" href="/panel/logout">Log out</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container dash">
+    <h1 class="dash__title">Dashboard</h1>
+
+    <% if (success === "uploaded") { %><div class="alert alert--success">✓ Wallpaper uploaded successfully.</div><% } %>
+    <% if (success === "deleted") { %><div class="alert alert--success">✓ Wallpaper deleted.</div><% } %>
+    <% if (error) { %><div class="alert alert--error">✗ <%= error %></div><% } %>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat__num"><%= total %></div>
+        <div class="stat__label">Wallpapers</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num"><%= totalDownloads %></div>
+        <div class="stat__label">Total downloads</div>
+      </div>
+      <div class="stat">
+        <div class="stat__num"><%= catStats.filter(function(c){return c.count>0;}).length %></div>
+        <div class="stat__label">Active categories</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Upload -->
+      <section class="panel">
+        <h2 class="panel__title">Upload a wallpaper</h2>
+        <form action="/panel/wallpaper" method="post" enctype="multipart/form-data">
+          <div class="field">
+            <label for="title">Title</label>
+            <input id="title" name="title" type="text" placeholder="e.g. Misty Mountain Dawn" required />
+          </div>
+          <div class="field">
+            <label for="category">Category</label>
+            <select id="category" name="category" required>
+              <% categories.forEach(function(c){ %>
+                <option value="<%= c.key %>"><%= c.emoji %> <%= c.label %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="3" placeholder="A short caption for this wallpaper…"></textarea>
+          </div>
+          <div class="field">
+            <label for="wallpaper" class="filedrop" id="filedrop">
+              <span class="filedrop__icon">🖼️</span>
+              <span class="filedrop__text" id="filedropText">Click to choose an image (JPEG, PNG, GIF, WebP · max 10MB)</span>
+              <input id="wallpaper" name="wallpaper" type="file" accept="image/*" required hidden />
+            </label>
+          </div>
+          <button class="btn btn--primary btn--block" type="submit">⬆ Upload wallpaper</button>
+        </form>
+      </section>
+
+      <!-- Category breakdown -->
+      <section class="panel">
+        <h2 class="panel__title">By category</h2>
+        <ul class="catlist">
+          <% catStats.forEach(function(c){ %>
+            <li>
+              <a href="/category/<%= c.key %>"><span class="catlist__dot" style="background:<%= c.gradient %>"></span> <%= c.emoji %> <%= c.label %></a>
+              <span class="catlist__count"><%= c.count %> · ⬇ <%= c.downloads %></span>
+            </li>
+          <% }) %>
+        </ul>
+      </section>
+    </div>
+
+    <!-- Manage -->
+    <section class="panel">
+      <h2 class="panel__title">Manage wallpapers (<%= wallpapers.length %>)</h2>
+      <% if (wallpapers.length) { %>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Image</th><th>Title</th><th>Category</th><th>Downloads</th><th>Added</th><th></th></tr>
+            </thead>
+            <tbody>
+              <% wallpapers.forEach(function(w){ var _c = catOf(w.category); %>
+                <tr>
+                  <td><img class="thumb" src="/uploads/<%= encodeURIComponent(w.image) %>" alt="" /></td>
+                  <td><a href="/wallpaper/<%= w._id %>"><%= w.title %></a></td>
+                  <td><span class="tag" style="background:<%= _c.gradient %>"><%= _c.label %></span></td>
+                  <td><%= w.downloads || 0 %></td>
+                  <td class="muted"><%= formatDate(w.createdAt) %></td>
+                  <td>
+                    <form action="/panel/wallpaper/<%= w._id %>/delete" method="post" onsubmit="return confirm('Delete “<%= w.title %>”? This cannot be undone.');">
+                      <button class="btn btn--danger" type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="empty">No wallpapers yet — upload your first one above.</div>
+      <% } %>
+    </section>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

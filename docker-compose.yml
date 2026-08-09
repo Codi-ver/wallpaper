@@ -1,0 +1,32 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: wallpaper-mongo
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    # Kept internal-only: the app reaches it as `mongo:27017`.
+
+  app:
+    build: .
+    container_name: wallpaper-app
+    restart: unless-stopped
+    # Watch mode — `node --watch server.js`. Restarts on any source change.
+    command: npm run dev
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/wallpaper
+      - JWT_SECRET=dev_secret_change_me_please
+      - NODE_ENV=development
+    volumes:
+      # Live-reload: host source is mirrored into the container.
+      - .:/app
+      # Keep the image's installed node_modules (don't shadow with host).
+      - /app/node_modules
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:

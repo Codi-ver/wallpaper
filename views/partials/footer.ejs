@@ -1,0 +1,29 @@
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <a href="/" class="brand">✦ Lumora</a>
+      <p>Hand-picked HD wallpapers, free to download and built to make your screen feel alive.</p>
+    </div>
+
+    <div class="footer__col">
+      <h4>Explore</h4>
+      <a href="/">Home</a>
+      <a href="/explore">All wallpapers</a>
+      <a href="/about">About</a>
+    </div>
+
+    <div class="footer__col footer__cats">
+      <h4>Categories</h4>
+      <% categories.slice(0, 6).forEach(function(c){ %>
+        <a href="/category/<%= c.key %>"><%= c.label %></a>
+      <% }) %>
+    </div>
+  </div>
+  <div class="container footer__copy">
+    © <%= new Date().getFullYear() %> Lumora Wallpapers · Demo project · All images are sample content.
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

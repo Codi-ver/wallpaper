@@ -1,0 +1,38 @@
+<%- include("partials/head") %>
+<%- include("partials/navbar") %>
+
+<section class="page-head container">
+  <h1>Explore every wallpaper</h1>
+  <p><%= (page - 1) * 18 + (items.length ? 1 : 0) %>–<%= (page - 1) * 18 + items.length %> of the latest drops.</p>
+</section>
+
+<section class="section container">
+  <% if (items.length) { %>
+    <div class="masonry">
+      <% items.forEach(function(w){ %>
+        <%- include("partials/card", { w: w }) %>
+      <% }) %>
+    </div>
+
+    <% if (pages > 1) { %>
+      <div class="pagination">
+        <% if (page > 1) { %>
+          <a href="/explore?page=<%= page - 1 %>">← Prev</a>
+        <% } %>
+        <% for (var p = 1; p <= pages; p++) { %>
+          <a class="<%= p === page ? "active" : "" %>" href="/explore?page=<%= p %>"><%= p %></a>
+        <% } %>
+        <% if (page < pages) { %>
+          <a href="/explore?page=<%= page + 1 %>">Next →</a>
+        <% } %>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="empty">
+      <p>No wallpapers have been added yet.</p>
+      <a class="btn btn--primary" href="/panel">Go to admin panel</a>
+    </div>
+  <% } %>
+</section>
+
+<%- include("partials/footer") %>

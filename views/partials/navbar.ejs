@@ -1,0 +1,31 @@
+<header class="nav">
+  <div class="nav__inner container">
+    <a href="/" class="brand">✦ Lumora</a>
+
+    <button class="nav__toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="nav__links" id="navLinks">
+      <a href="/" class="<%= path === "/" ? "active" : "" %>">Home</a>
+      <a href="/explore" class="<%= path.indexOf("/explore") === 0 ? "active" : "" %>">Explore</a>
+
+      <div class="nav__dropdown">
+        <button type="button">Categories <span class="caret">▾</span></button>
+        <div class="nav__dropdown-menu">
+          <% categories.forEach(function(c){ %>
+            <a href="/category/<%= c.key %>"><span><%= c.emoji %></span> <%= c.label %></a>
+          <% }) %>
+        </div>
+      </div>
+
+      <a href="/about" class="<%= path.indexOf("/about") === 0 ? "active" : "" %>">About</a>
+    </nav>
+
+    <form class="nav__search" action="/search" method="get" role="search">
+      <input type="text" name="q" placeholder="Search wallpapers…" value="<%= typeof q !== "undefined" ? q : "" %>" aria-label="Search wallpapers" />
+    </form>
+
+    <a href="/panel" class="btn nav__admin">Admin</a>
+  </div>
+</header>

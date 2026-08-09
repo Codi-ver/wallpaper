@@ -1,0 +1,47 @@
+<%- include("partials/head") %>
+<%- include("partials/navbar") %>
+
+<section class="detail container">
+  <div class="detail__media reveal">
+    <img src="/uploads/<%= encodeURIComponent(w.image) %>" alt="<%= w.title %>" />
+  </div>
+
+  <aside class="detail__panel">
+    <a class="detail__cat" href="/category/<%= cat.key %>" style="background: <%= cat.gradient %>">
+      <%= cat.emoji %> <%= cat.label %>
+    </a>
+    <h1 class="detail__title"><%= w.title %></h1>
+
+    <% if (w.description) { %>
+      <p class="detail__desc"><%= w.description %></p>
+    <% } %>
+
+    <div class="meta">
+      <div class="meta__row"><span>Downloads</span><strong><%= w.downloads || 0 %></strong></div>
+      <div class="meta__row"><span>File size</span><strong><%= formatBytes(w.fileSize) %></strong></div>
+      <div class="meta__row"><span>Added</span><strong><%= formatDate(w.createdAt) %></strong></div>
+      <div class="meta__row">
+        <span>Uploaded by</span>
+        <strong><%= (w.uploadedBy && (w.uploadedBy.username || w.uploadedBy.name)) || "Lumora" %></strong>
+      </div>
+    </div>
+
+    <a class="btn btn--primary btn--lg detail__dl" href="/wallpaper/<%= w._id %>/download">
+      ⬇ Download wallpaper
+    </a>
+    <a class="detail__back" href="/category/<%= cat.key %>">← Back to <%= cat.label %></a>
+  </aside>
+</section>
+
+<% if (related.length) { %>
+  <section class="section container">
+    <div class="section__head"><h2>More in <%= cat.label %></h2></div>
+    <div class="masonry">
+      <% related.forEach(function(w2){ %>
+        <%- include("partials/card", { w: w2 }) %>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
+
+<%- include("partials/footer") %>

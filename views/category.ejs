@@ -1,0 +1,30 @@
+<%- include("partials/head") %>
+
+<header class="cat-hero" style="background: <%= cat.gradient %>">
+  <div class="container">
+    <a class="cat-hero__back" href="/">← Back home</a>
+    <span class="cat-hero__emoji"><%= cat.emoji %></span>
+    <h1><%= cat.label %></h1>
+    <p><%= cat.blurb %></p>
+    <span class="cat-hero__count"><%= items.length %> wallpaper<%= items.length === 1 ? "" : "s" %></span>
+  </div>
+</header>
+
+<%- include("partials/navbar") %>
+
+<section class="section container">
+  <% if (items.length) { %>
+    <div class="masonry">
+      <% items.forEach(function(w){ %>
+        <%- include("partials/card", { w: w }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty">
+      <p>No wallpapers in <strong><%= cat.label %></strong> yet.</p>
+      <a class="btn btn--primary" href="/panel">Add one →</a>
+    </div>
+  <% } %>
+</section>
+
+<%- include("partials/footer") %>

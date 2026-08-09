@@ -1,11 +1,13 @@
 const { default: mongoose } = require("mongoose");
 const categoryModel = require("../models/category");
-//const f_validator = require("fastest-validator");
-//const validator = new f_validator();
 
 exports.getAll = async (req, res) => {
-  const categories = await categoryModel.find({});
-  return res.json(categories);
+  try {
+    const categories = await categoryModel.find({});
+    return res.json(categories);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 exports.create = async (req, res) => {
@@ -13,41 +15,32 @@ exports.create = async (req, res) => {
     const { title, href } = req.body;
 
     const isExistCategory = await categoryModel.findOne({ title });
-
     if (isExistCategory) {
-      return res.status(400).json({ message: "This category exist !" });
+      return res.status(400).json({ message: "This category already exists!" });
     }
 
     const newCategory = await categoryModel.create({ title, href });
-
-    return res.json(newCategory);
+    return res.status(201).json(newCategory);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-  catch(err) {
-    res.status(500).json({"Error ": err.message})
-  }
-
 };
 
 exports.delete = async (req, res) => {
   try {
-    const isExistCategory = await categoryModel.findById(req.params.id);
-
-    const isValidId = mongoose.Types.ObjectId.isValid(req.params.id);
-
+    const isValidId = mongoose.isValidObjectId(req.params.id);
     if (!isValidId) {
-      return res.status(400).json({ message: "Id is not valid !" });
+      return res.status(400).json({ message: "Id is not valid!" });
     }
 
+    const isExistCategory = await categoryModel.findById(req.params.id);
     if (!isExistCategory) {
-      return res.status(404).json({ message: "Category not found !" });
+      return res.status(404).json({ message: "Category not found!" });
     }
 
-    const deletedCategory = await categoryModel.findByIdAndDelete(
-      req.params.id,
-    );
-
+    const deletedCategory = await categoryModel.findByIdAndDelete(req.params.id);
     return res.json(deletedCategory);
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ message: err.message });
   }
 };

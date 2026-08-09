@@ -1,0 +1,75 @@
+<%- include("partials/head") %>
+<%- include("partials/navbar") %>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <span class="hero__badge">✦ <%= total %> free wallpapers &amp; counting</span>
+    <h1>Wallpapers that make<br /><span>your screen feel alive.</span></h1>
+    <p>Browse a curated collection of high-resolution wallpapers across ten categories — from deep space to quiet forests. Free to download, ready in one click.</p>
+
+    <form class="hero__search" action="/search" method="get">
+      <input type="text" name="q" placeholder="Try “mountains”, “neon”, “galaxy”…" aria-label="Search" />
+      <button class="btn btn--primary" type="submit">Search</button>
+    </form>
+
+    <div class="hero__pills">
+      <% categories.slice(0, 8).forEach(function(c){ %>
+        <a class="pill" href="/category/<%= c.key %>" style="background: <%= c.gradient %>"><%= c.emoji %> <%= c.label %></a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- Featured -->
+<section class="section container">
+  <div class="section__head">
+    <h2>★ Most downloaded</h2>
+    <a href="/explore">View all →</a>
+  </div>
+  <% if (featured.length) { %>
+    <div class="masonry">
+      <% featured.forEach(function(w){ %>
+        <%- include("partials/card", { w: w }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty">No wallpapers yet. Add some from the <a href="/panel">admin panel</a>.</div>
+  <% } %>
+</section>
+
+<!-- Categories -->
+<section class="section container">
+  <div class="section__head">
+    <h2>Browse by category</h2>
+    <a href="/explore">All wallpapers →</a>
+  </div>
+  <div class="cats">
+    <% categories.forEach(function(c){ %>
+      <a class="cat reveal" href="/category/<%= c.key %>" style="background: <%= c.gradient %>">
+        <span class="cat__emoji"><%= c.emoji %></span>
+        <span class="cat__label"><%= c.label %></span>
+        <span class="cat__blurb"><%= c.blurb %></span>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<!-- Fresh -->
+<section class="section container">
+  <div class="section__head">
+    <h2>Just added</h2>
+    <a href="/explore">More →</a>
+  </div>
+  <% if (recent.length) { %>
+    <div class="masonry">
+      <% recent.forEach(function(w){ %>
+        <%- include("partials/card", { w: w }) %>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty">Nothing here yet.</div>
+  <% } %>
+</section>
+
+<%- include("partials/footer") %>

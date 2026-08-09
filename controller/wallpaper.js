@@ -1,145 +1,78 @@
 const wallpaperModel = require("../models/wallpaper");
 const mongoose = require("mongoose");
 
+// Shared creation logic used by both the JSON API and the web panel.
+exports.createWallpaper = async (req) => {
+  if (!req.file) {
+    const err = new Error("Please choose a wallpaper image");
+    err.status = 400;
+    throw err;
+  }
+
+  const { title, description, category } = req.body;
+  if (!title || !category) {
+    const err = new Error("Title and category are required");
+    err.status = 400;
+    throw err;
+  }
+
+  return wallpaperModel.create({
+    title: title.trim(),
+    description: (description || "").trim(),
+    category,
+    image: req.file.filename,
+    fileSize: req.file.size,
+    uploadedBy: req.user && req.user._id,
+  });
+};
+
+// Shared delete logic (also removes nothing on disk here; caller decides).
+exports.deleteWallpaper = async (id) => {
+  if (!mongoose.isValidObjectId(id)) {
+    const err = new Error("Invalid id");
+    err.status = 400;
+    throw err;
+  }
+  const wallpaper = await wallpaperModel.findById(id);
+  if (!wallpaper) {
+    const err = new Error("Wallpaper not found");
+    err.status = 404;
+    throw err;
+  }
+  await wallpaperModel.findByIdAndDelete(id);
+  return wallpaper;
+};
+
+// ---- JSON API handlers ----
+
 exports.upload = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: "Please enter one wallpaper !" });
-    }
-
-    const { title, description, category } = req.body;
-
-    const newWallpaper = await wallpaperModel.create({
-      title,
-      description,
-      fileSize: req.file.size,
-      category,
-      uploadedBy: req.user._id,
-    });
-
-    return res.status(201).json(newWallpaper);
+    const wallpaper = await exports.createWallpaper(req);
+    return res.status(201).json(wallpaper);
   } catch (err) {
-    return res.status(500).json({ "❌ Error ": err.message });
+    return res.status(err.status || 500).json({ message: err.message });
   }
 };
 
-exports.delete = async (req, res) => {
-  const wallpaperId = req.params.id;
-
-  const isValidId = mongoose.Types.ObjectId.isValid(wallpaperId);
-
-  if (!isValidId) {
-    return res.status(400).json({ message: "Id is not valid !" });
+exports.remove = async (req, res) => {
+  try {
+    const wallpaper = await exports.deleteWallpaper(req.params.id);
+    return res.json(wallpaper);
+  } catch (err) {
+    return res.status(err.status || 500).json({ message: err.message });
   }
-
-  const isExistWallpaper = await wallpaperModel.findById(req.params.id);
-
-  if (!isExistWallpaper) {
-    return res.status(404).json({ message: "Wallpaper not found !" });
-  }
-
-  const deletedWallpaper = await wallpaperModel.findByIdAndDelete(wallpaperId);
-
-  return res.json(deletedWallpaper);
 };
 
-exports.getNatureWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "nature"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
+exports.list = async (req, res) => {
+  try {
+    const filter = req.query.category ? { category: req.query.category } : {};
+    const items = await wallpaperModel
+      .find(filter)
+      .sort("-createdAt")
+      .limit(50)
+      .lean();
+    return res.json(items);
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
   }
-
-  res.render('nature', {wallpapers});
-};
-
-
-exports.getCarsWallpaepr = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "cars"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('cars', {wallpapers});
-};
-
-exports.getAnimeWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "anime"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('anime', {wallpapers});
-};
-
-exports.getAnimalsWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "animals"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('animals', {wallpapers});
-};
-
-exports.getFlowersWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "flowers"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('flowers', {wallpapers});
-};
-
-exports.getSpaceWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "space"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('space', {wallpapers});
-};
-
-exports.getCityWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "city"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('city', {wallpapers});
-};
-
-exports.getSportsWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "sports"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('sports', {wallpapers});
-};
-
-exports.getTechnologyWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "technology"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('technology', {wallpapers});
-};
-
-exports.getCuteWallpaper = async (res) => {
-  const wallpapers = await wallpaperModel.find({category: "cute"});
-
-  if (!wallpapers) {
-    return res.status(404).json({message: "Not found any wallpaper !"})
-  }
-
-  res.render('cute', {wallpapers});
 };

@@ -1,0 +1,35 @@
+<%- include("partials/head") %>
+<%- include("partials/navbar") %>
+
+<section class="page-head container">
+  <h1>Search</h1>
+  <form class="hero__search hero__search--inline" action="/search" method="get">
+    <input type="text" name="q" placeholder="Search wallpapers…" value="<%= q %>" autofocus />
+    <button class="btn btn--primary" type="submit">Search</button>
+  </form>
+</section>
+
+<section class="section container">
+  <% if (q) { %>
+    <p class="search__summary">
+      <%= items.length %> result<%= items.length === 1 ? "" : "s" %> for “<%= q %>”
+    </p>
+  <% } %>
+
+  <% if (items.length) { %>
+    <div class="masonry">
+      <% items.forEach(function(w){ %>
+        <%- include("partials/card", { w: w }) %>
+      <% }) %>
+    </div>
+  <% } else if (q) { %>
+    <div class="empty">
+      <p>No wallpapers matched “<%= q %>”.</p>
+      <a class="btn btn--primary" href="/explore">Browse everything →</a>
+    </div>
+  <% } else { %>
+    <div class="empty"><p>Type something above to start searching.</p></div>
+  <% } %>
+</section>
+
+<%- include("partials/footer") %>

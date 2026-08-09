@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin login · Lumora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="auth-body">
+  <main class="auth">
+    <div class="auth__card">
+      <a href="/" class="brand auth__brand">✦ Lumora</a>
+      <h1>Welcome back</h1>
+      <p class="auth__sub">Sign in to manage wallpapers.</p>
+
+      <% if (error) { %>
+        <div class="alert alert--error"><%= error %></div>
+      <% } %>
+
+      <form action="/panel/login" method="post">
+        <div class="field">
+          <label for="identifier">Email, phone or username</label>
+          <input id="identifier" name="identifier" type="text" placeholder="admin" required autocomplete="username" />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button class="btn btn--primary btn--lg btn--block" type="submit">Sign in →</button>
+      </form>
+
+      <p class="auth__hint">Demo credentials → <code>admin</code> / <code>admin123</code></p>
+    </div>
+  </main>
+</body>
+</html>
